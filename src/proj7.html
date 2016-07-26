@@ -1,0 +1,107 @@
+<html>
+<head>
+    <title>Ahmed Al-Ghannam, CS 535, Project #7</title>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+    <script type="text/javascript" src="glMatrix.js"></script>
+    <script type="text/javascript" src="webgl-utils.js"></script>
+    <script type="text/javascript" src="proj7.js"></script>
+
+    <script id="shader-fs" type="x-shader/x-fragment">
+        precision mediump float;
+
+        varying vec2 vTextureCoord;
+        varying vec3 vLightWeighting;
+
+        uniform sampler2D uSampler;
+
+        void main(void) {
+        vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+        }
+    </script>
+
+    <script id="shader-vs" type="x-shader/x-vertex">
+        attribute vec3 aVertexPosition;
+        attribute vec3 aVertexNormal;
+        attribute vec2 aTextureCoord;
+
+        uniform mat4 uMVMatrix;
+        uniform mat4 uPMatrix;
+        uniform mat3 uNMatrix;
+
+        uniform vec3 uAmbientColor;
+
+        uniform vec3 uLightingDirection;
+        uniform vec3 uDirectionalColor;
+
+        uniform bool uUseLighting;
+
+        varying vec2 vTextureCoord;
+        varying vec3 vLightWeighting;
+
+        void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vTextureCoord = aTextureCoord;
+
+        if (!uUseLighting) {
+        vLightWeighting = vec3(1.0, 1.0, 1.0);
+        } else {
+        vec3 transformedNormal = uNMatrix * aVertexNormal;
+        float directionalLightWeighting = max(dot(transformedNormal, uLightingDirection), 0.0);
+        vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+        }
+        }
+    </script>
+</head>
+
+<body>
+    <h2>Welcome to the WebGL Planet Viewer!</h2>
+    <canvas id="gl-canvas" style="border: none;" width="500" height="500"></canvas>
+    <br />
+    <h3><b>Instructions:</b></h3>
+    - Start by <b>choosing a planet</b> from this list and clicking the button to display it above:
+    <select id="planetList">
+        <option value="none" selected="selected">Select a planet</option>
+        <option value="mercury">Mercury</option>
+        <option value="venus">Venus</option>
+        <option value="earth">Earth</option>
+        <option value="mars">Mars</option>
+        <option value="jupiter">Jupiter</option>
+        <option value="saturn">Saturn</option>
+        <option value="uranus">Uranus</option>
+        <option value="neptune">Neptune</option> 
+    </select>
+    <input type="submit" id="show" value="Show Planet">
+    <input type="checkbox" id="rotation"/> Toggle rotation
+    <input type="checkbox" id="lighting" checked /> Toggle lighting
+    <br />
+    - You can toggle the <b>rotation</b> and <b>lighting</b> on and off by checking the respective boxes next to the display button.
+    <br />
+    - Using your mouse, you can <b>manually spin a planet</b> by dragging it any direction. (You must uncheck the rotation box for this to work.)
+    <br />
+    - With the lighting box checked, you can also <b>change the RGB ambient color ratio</b> for each planet by entering values in the fields below:  
+    <br />
+    <table style="border: 0; padding: 10px;">
+        <tr>
+            <td>R: <input type="text" id="ambientR" value="0.5" />
+            <td>G: <input type="text" id="ambientG" value="0.5" />
+            <td>B: <input type="text" id="ambientB" value="0.5" />
+        </tr>
+    </table>
+    <h3><b>Please Note:</b></h3>
+    - Microsoft Edge on Windows 10 is the recommended browser for running all the features in this program. 
+    <br /> 
+    - Alternatively, launch the program from within Visual Studio (with all the associated files), in which case it can be used on Google Chrome.
+    <br />
+    - The planets as displayed here are <i>NOT</i> to scale. 
+    <br />
+    - This program makes use of WebGL <i>modeling</i>, <i>interaction</i>, <i>animation</i>, <i>texturing</i>, and <i>lighting</i>. 
+    <br />
+    - For information on the planets, please visit the <a href="http://nssdc.gsfc.nasa.gov/planetary/factsheet/">NASA Planet Factsheet</a> or the <a href="https://en.wikipedia.org/wiki/Portal:Solar_System"> Wikipedia Solar System Portal</a>.
+    <br />
+    - For any questions or issues with this project, please contact me at amalghannam (at) crimson (dot) ua (dot) edu.
+    <br /> 
+    <br />
+</body>
+</html>
