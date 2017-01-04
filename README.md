@@ -1,6 +1,8 @@
 ## WebGL Planet Viewer
 This project is a simple web tool that utilizes WebGL to draw the planets of our Solar System, written in JavaScript and HTML5. 
 
+Below are example test-cases using Earth, Mars, and Jupiter. 
+
 ### Earth
 
 ![alt tag] (http://i.imgur.com/IjuNDn1.png)
